@@ -84,7 +84,7 @@ function CollectionProvider({ children }: any) {
   };
 
   const setDataToBrowserStoreage = (collections: any) => {
-    setLocalStorage("mockazzoRoutes", collections);
+    setLocalStorage("mockazzoStorage", collections);
   };
 
   return (
