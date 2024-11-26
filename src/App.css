@@ -1,0 +1,17 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+}
+.collection-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.route-wrapper div {
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.route-wrapper div:hover {
+  background: black;
+}

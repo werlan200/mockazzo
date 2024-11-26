@@ -1,18 +1,13 @@
-import { Input, Flex, Select, Button, Form, Switch } from "antd";
-import { SaveOutlined } from "@ant-design/icons";
-import { MockedRoute } from "../context/CollectionContext.types";
+import { Input, Row, Col, Select, Button, Form, Switch } from "antd";
+import { Collection, MockedRoute } from "../context/CollectionContext.types";
 import { useCollectionContext } from "../context/CollectionContext";
 import type { FormProps } from "antd";
 import { baseMockRoute } from "../constants/baseMockRoute";
+import { useEffect } from "react";
 
 const { TextArea } = Input;
 
 const { Option } = Select;
-
-const onFinish: FormProps<MockedRoute>["onFinish"] = (values) => {
-  console.log("Success:", values);
-  console.log(values.response);
-};
 
 const onFinishFailed: FormProps<MockedRoute>["onFinishFailed"] = (
   errorInfo
@@ -23,10 +18,10 @@ const onFinishFailed: FormProps<MockedRoute>["onFinishFailed"] = (
 const RouteForm = () => {
   const [form] = Form.useForm();
 
-  const { collection, selectedId } = useCollectionContext();
-  const foundRoute = collection?.find(
-    (route: MockedRoute) => route.id === selectedId
-  );
+  const { selectedId, getRoute, deleteRoute, updateRoute, setSelectedId } =
+    useCollectionContext();
+
+  const foundRoute = getRoute(selectedId);
 
   const onBeautify = () => {
     let parsedJson = JSON.parse(form.getFieldValue("response"));
@@ -35,14 +30,25 @@ const RouteForm = () => {
     form.setFieldValue("response", beautifiedJson);
   };
 
+  const onFinish = (values: MockedRoute) => {
+    updateRoute(selectedId, values);
+    setSelectedId("");
+  };
+
+  useEffect(() => {
+    if (form) form.resetFields();
+  }, [selectedId]);
+
+  if (!selectedId) return <></>;
+
   return (
     <Form
       form={form}
-      name="basic"
+      name={selectedId}
       labelCol={{ span: 5 }}
       wrapperCol={{ span: 16 }}
       style={{ maxWidth: 600 }}
-      initialValues={foundRoute || baseMockRoute}
+      initialValues={foundRoute}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       autoComplete="off"
@@ -95,11 +101,27 @@ const RouteForm = () => {
         <TextArea style={{ minHeight: "200px" }} />
       </Form.Item>
 
-      <Form.Item label={null}>
-        <Button type="primary" icon={<SaveOutlined />} htmlType="submit">
-          Submit
-        </Button>
-      </Form.Item>
+      <Row>
+        <Col>
+          <Form.Item label={null}>
+            <Button
+              color="danger"
+              htmlType="button"
+              onClick={() => deleteRoute(selectedId)}
+            >
+              Delete
+            </Button>
+          </Form.Item>
+        </Col>
+
+        <Col>
+          <Form.Item label={null}>
+            <Button type="primary" htmlType="submit">
+              Submit
+            </Button>
+          </Form.Item>
+        </Col>
+      </Row>
     </Form>
   );
 };

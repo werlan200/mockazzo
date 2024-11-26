@@ -1,5 +1,5 @@
 export interface Collection {
-  routes: MockedRoute[] | [];
+  routes: MockedRoute[];
   id: string;
   label: string;
 }
@@ -11,7 +11,7 @@ export interface MockedRoute {
   delay: number;
   status: number;
   method: "GET" | "POST" | "PUT" | "DELETE";
-  response: "";
+  response: string;
   responseHeaders: any;
   id: string;
 }

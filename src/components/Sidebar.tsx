@@ -2,37 +2,21 @@ import { Tree, Button, Flex } from "antd";
 import type { TreeDataNode, TreeProps } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useCollectionContext } from "../context/CollectionContext";
+import { useState } from "react";
+import { Collection } from "../context/CollectionContext.types";
 
 const Sidebar = () => {
-  const { selectedId, setSelectedId, collections, addCollection } =
-    useCollectionContext();
+  const {
+    selectedId,
+    setSelectedId,
+    collections,
+    addCollection,
+    addRouteToCollection,
+  } = useCollectionContext();
 
-  const onSelect: TreeProps["onSelect"] = (selectedKeys, info) => {
-    console.log("selected", selectedKeys, info);
-
-    collections.forEach((collection: any) => {
-      if (collection.id === info.node.key) {
-        setSelectedId(collection.id);
-      }
-    });
+  const onAddClick = (id: string) => {
+    addRouteToCollection(id);
   };
-
-  const formatCollectionToTree = collections.map((collection: any) => {
-    return {
-      title: (data: any) => (
-        <div>
-          {collection.label} <Button icon={<PlusOutlined />}></Button>
-        </div>
-      ),
-      key: collection.id,
-      children: collection?.routes?.map((route: any) => {
-        return {
-          title: route.label,
-          key: route.id,
-        };
-      }),
-    };
-  });
 
   const onNewCollectionClick = () => {
     setSelectedId("");
@@ -50,11 +34,27 @@ const Sidebar = () => {
           New Collection
         </Button>
       </Flex>
-      <Tree
-        defaultExpandAll
-        onSelect={onSelect}
-        treeData={formatCollectionToTree}
-      />
+      {collections.map((collection: Collection) => {
+        return (
+          <div className="wrapper" key={collection.id}>
+            <div className="collection-wrapper">
+              {collection.label}{" "}
+              <Button
+                size="small"
+                icon={<PlusOutlined />}
+                onClick={() => onAddClick(collection.id)}
+              ></Button>
+            </div>
+            <div className="route-wrapper">
+              {collection.routes.map((route) => (
+                <div onClick={() => setSelectedId(route.id)} key={route.id}>
+                  {route.label}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 };
