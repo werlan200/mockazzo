@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Mockazzo",
+  "version": "1.0",
+  "description": "Mockazzo, the serverless mock server",
+  "icons": {
+    "16": "vite.svg"
+  },
+  "permissions": ["scripting"],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["interceptor.js"],
+      "matches": ["http://*/*", "https://*/*"]
+    }
+  ]
+}

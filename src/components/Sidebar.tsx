@@ -1,17 +1,20 @@
-import { Tree, Button, Flex } from "antd";
-import type { TreeDataNode, TreeProps } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Button, Input, Modal, Row } from "antd";
+import { PlusOutlined, MoreOutlined } from "@ant-design/icons";
 import { useCollectionContext } from "../context/CollectionContext";
-import { useState } from "react";
 import { Collection } from "../context/CollectionContext.types";
+import { useState } from "react";
 
 const Sidebar = () => {
+  const [selectedCollection, setSelectedCollection] = useState("");
+  const [newCollectionLabel, setNewCollectionLabel] = useState("");
+
   const {
-    selectedId,
     setSelectedId,
     collections,
     addCollection,
     addRouteToCollection,
+    deleteCollection,
+    updateCollectionLabel,
   } = useCollectionContext();
 
   const onAddClick = (id: string) => {
@@ -23,17 +26,26 @@ const Sidebar = () => {
     addCollection();
   };
 
+  const onModalOk = () => {
+    if (newCollectionLabel !== "")
+      updateCollectionLabel(selectedCollection, newCollectionLabel);
+
+    setNewCollectionLabel("");
+    setSelectedCollection("");
+  };
+
   return (
     <div>
-      <Flex gap="small">
+      <Row>
         <Button
+          block
           type="primary"
           onClick={onNewCollectionClick}
           icon={<PlusOutlined />}
         >
           New Collection
         </Button>
-      </Flex>
+      </Row>
       {collections.map((collection: Collection) => {
         return (
           <div className="wrapper" key={collection.id}>
@@ -43,6 +55,11 @@ const Sidebar = () => {
                 size="small"
                 icon={<PlusOutlined />}
                 onClick={() => onAddClick(collection.id)}
+              ></Button>
+              <Button
+                size="small"
+                icon={<MoreOutlined />}
+                onClick={() => setSelectedCollection(collection.id)}
               ></Button>
             </div>
             <div className="route-wrapper">
@@ -55,6 +72,38 @@ const Sidebar = () => {
           </div>
         );
       })}
+      <Modal
+        title="Edit Collection"
+        open={selectedCollection !== ""}
+        onOk={onModalOk}
+        onCancel={() => {
+          setSelectedCollection("");
+          setNewCollectionLabel("");
+        }}
+        okText="Update"
+        footer={[
+          <Button
+            key="delete"
+            danger
+            onClick={() => {
+              deleteCollection(selectedCollection);
+              setNewCollectionLabel("");
+              setSelectedCollection("");
+            }}
+          >
+            Delete Collection
+          </Button>,
+          <Button key="submit" type="primary" onClick={onModalOk}>
+            Update
+          </Button>,
+        ]}
+      >
+        <Input
+          placeholder="New collection label"
+          onChange={(e) => setNewCollectionLabel(e.target.value)}
+          value={newCollectionLabel}
+        />
+      </Modal>
     </div>
   );
 };

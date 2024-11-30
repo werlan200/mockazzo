@@ -1,10 +1,15 @@
 (function () {
   const serializedValue = localStorage.getItem("mockazzoStorage");
-  if (!serializedValue) {
+  const isMockazzoOn = localStorage.getItem("isMockazzoOn");
+
+  if (!serializedValue || !isMockazzoOn) {
     console.log("No serialized value found in localStorage, returning");
     return null;
   }
   const parsedStorage = JSON.parse(serializedValue);
+  const isParsedMockazzoOn = JSON.parse(isMockazzoOn);
+
+  if (!isParsedMockazzoOn) return null;
 
   const mockingRoutes = parsedStorage
     .map((collection) => collection.routes)

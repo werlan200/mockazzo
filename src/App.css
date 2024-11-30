@@ -15,3 +15,16 @@
 .route-wrapper div:hover {
   background: black;
 }
+
+.mockazzoHeader {
+  height: 100%;
+}
+
+.mockazzoForm {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+  width: 100%;
+  margin-inline: auto;
+  margin-top: 16px;
+}

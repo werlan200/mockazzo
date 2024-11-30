@@ -1,8 +1,7 @@
-import { Input, Row, Col, Select, Button, Form, Switch } from "antd";
-import { Collection, MockedRoute } from "../context/CollectionContext.types";
+import { Input, Row, Col, Select, Button, Form, Switch, Flex } from "antd";
+import { MockedRoute } from "../context/CollectionContext.types";
 import { useCollectionContext } from "../context/CollectionContext";
 import type { FormProps } from "antd";
-import { baseMockRoute } from "../constants/baseMockRoute";
 import { useEffect } from "react";
 
 const { TextArea } = Input;
@@ -47,53 +46,72 @@ const RouteForm = () => {
       name={selectedId}
       labelCol={{ span: 5 }}
       wrapperCol={{ span: 16 }}
-      style={{ maxWidth: 600 }}
       initialValues={foundRoute}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
       autoComplete="off"
+      className="mockazzoForm"
     >
       <Form.Item<MockedRoute>
         label="Url"
         name="url"
         rules={[{ required: true, message: "Please input your username!" }]}
+        className="mockazzoForm__url"
       >
         <Input />
       </Form.Item>
-      <Form.Item<MockedRoute>
-        label="Label"
-        name="label"
-        rules={[{ required: true, message: "Please input your username!" }]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item<MockedRoute>
-        label="Delay"
-        name="delay"
-        rules={[{ required: true, message: "Please input your username!" }]}
-      >
-        <Input />
-      </Form.Item>
-      <Form.Item<MockedRoute>
-        label="Status"
-        name="status"
-        rules={[{ required: true, message: "Please input your username!" }]}
-      >
-        <Input />
-      </Form.Item>
+
+      <Row>
+        <Col span={12}>
+          <Form.Item<MockedRoute>
+            label="Label"
+            name="label"
+            rules={[{ required: true, message: "Please input your username!" }]}
+          >
+            <Input />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item<MockedRoute>
+            label="Delay"
+            name="delay"
+            rules={[{ required: true, message: "Please input your username!" }]}
+          >
+            <Input />
+          </Form.Item>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col span={12}>
+          <Form.Item<MockedRoute>
+            label="Status"
+            name="status"
+            rules={[{ required: true, message: "Please input your username!" }]}
+          >
+            <Input />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            name="method"
+            label="Method"
+            rules={[{ required: true }]}
+            className="rowItem"
+          >
+            <Select placeholder="Select a option and change input text above">
+              <Option value="GET">GET</Option>
+            </Select>
+          </Form.Item>
+        </Col>
+      </Row>
       <Form.Item<MockedRoute> label="Is Mocking" name="isMocking">
         <Switch />
       </Form.Item>
 
-      <Form.Item name="method" label="Method" rules={[{ required: true }]}>
-        <Select placeholder="Select a option and change input text above">
-          <Option value="GET">GET</Option>
-        </Select>
-      </Form.Item>
-
       <Form.Item label={null}>
         <Button htmlType="button" onClick={onBeautify}>
-          Beautify
+          Beautify Response
         </Button>
       </Form.Item>
 
@@ -101,7 +119,7 @@ const RouteForm = () => {
         <TextArea style={{ minHeight: "200px" }} />
       </Form.Item>
 
-      <Row>
+      <Row justify="center" gutter={8}>
         <Col>
           <Form.Item label={null}>
             <Button

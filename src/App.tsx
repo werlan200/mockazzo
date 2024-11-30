@@ -1,13 +1,13 @@
 import "./App.css";
 import Sidebar from "./components/Sidebar";
+import MockazzoHeader from "./components/Header";
 import { CollectionProvider } from "./context/CollectionContext";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Flex, Layout } from "antd";
 import RouteForm from "./components/RouteForm";
 
 const { Header, Sider, Content } = Layout;
-
 const headerStyle: React.CSSProperties = {
   textAlign: "center",
   color: "#fff",
@@ -38,6 +38,20 @@ const layoutStyle = {
 };
 
 function App() {
+  const send = async () => {
+    try {
+      const response = await fetch("https://example.com/api/endpoint1");
+      const data = await response.json();
+      console.log("datasal", data);
+    } catch (error) {
+      console.error;
+    }
+  };
+
+  useEffect(() => {
+    send();
+  }, []);
+
   return (
     <CollectionProvider>
       <Flex>
@@ -46,7 +60,9 @@ function App() {
             <Sidebar />
           </Sider>
           <Layout>
-            <Header style={headerStyle}>Header</Header>
+            <Header style={headerStyle}>
+              <MockazzoHeader />
+            </Header>
             <Content style={contentStyle}>
               <RouteForm />
             </Content>

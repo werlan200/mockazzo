@@ -1,14 +1,23 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { Collection, MockedRoute } from "./CollectionContext.types";
 import { baseMockRoute, createCollection } from "../constants/baseMockRoute";
 import { uuidv4 } from "../utils/uuid";
-import { setLocalStorage } from "../utils/storage";
+import { setLocalStorage, getLocalStorage } from "../utils/storage";
+import {
+  compressJSON,
+  decompressJSON,
+  copyStringToClipboard,
+  readClipboard,
+} from "../utils/compress";
 
 const CollectionContext = createContext<any>(undefined);
 
 function CollectionProvider({ children }: any) {
   const [collections, setCollections] = useState<Collection[]>([]);
   const [selectedId, setSelectedId] = useState("");
+  const [isMockazzoOn, setIsMockazzoOn] = useState(
+    getLocalStorage("isMockazzoOn") === true
+  );
 
   const addRouteToCollection = (collectionId: string) => {
     setCollections((collection) => {
@@ -87,17 +96,77 @@ function CollectionProvider({ children }: any) {
     setLocalStorage("mockazzoStorage", collections);
   };
 
+  const toggleMockazzoOn = () => {
+    setIsMockazzoOn((isOn) => {
+      setLocalStorage("isMockazzoOn", !isOn);
+      return !isOn;
+    });
+  };
+
+  const deleteCollection = (collectionId: string) => {
+    setCollections((collections) => {
+      const filteredCollections = collections.filter(
+        (collection) => collection.id !== collectionId
+      );
+      return filteredCollections;
+    });
+  };
+
+  const updateCollectionLabel = (collectionId: string, label: string) => {
+    setCollections((collections) => {
+      const newCollections = collections.map((collection) => {
+        if (collection.id === collectionId) {
+          collection.label = label;
+        }
+        return collection;
+      });
+
+      return newCollections;
+    });
+  };
+
+  const exportCollections = (collectionIds: string[]) => {
+    if (collectionIds.length === 0) return;
+
+    const collectionsToBeExported = collections.filter(
+      (collection) =>
+        collectionIds.includes(collection.id) && collection.routes.length > 0
+    );
+    const compressedData = compressJSON(collectionsToBeExported);
+    copyStringToClipboard(compressedData);
+  };
+
+  const importCollections = async () => {
+    try {
+      const clipboardContent = await readClipboard();
+      if (!clipboardContent) throw "No data in clipboard";
+
+      const decompressedData = decompressJSON(clipboardContent);
+      setCollections((collections) => {
+        return [...collections, ...decompressedData];
+      });
+    } catch (error) {
+      console.log("import collection error");
+    }
+  };
+
   return (
     <CollectionContext.Provider
       value={{
         collections,
         selectedId,
+        isMockazzoOn,
         setSelectedId,
         addCollection,
         addRouteToCollection,
         getRoute,
         deleteRoute,
         updateRoute,
+        toggleMockazzoOn,
+        exportCollections,
+        importCollections,
+        deleteCollection,
+        updateCollectionLabel,
       }}
     >
       {children}
