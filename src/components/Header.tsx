@@ -1,13 +1,11 @@
 import { useCollectionContext } from "../context/CollectionContext";
-import { Button, Flex, Modal } from "antd";
+import { Button, Flex, Modal, Tooltip, Checkbox } from "antd";
 import {
   PoweroffOutlined,
   ImportOutlined,
   ExportOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
-
-import { Checkbox } from "antd";
 
 const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,27 +41,44 @@ const Header = () => {
 
   return (
     <>
-      <Flex gap={16} align="center" justify="end" className="mockazzoHeader">
-        <Flex gap={6}>
-          <Button
-            onClick={importCollections}
-            icon={<ImportOutlined style={{ fontSize: "20px" }} />}
-            type="text"
-            shape="circle"
-          ></Button>
-          <Button
-            onClick={() => setIsModalOpen(true)}
-            icon={<ExportOutlined style={{ fontSize: "20px" }} />}
-            type="text"
-            shape="circle"
-          ></Button>
+      <Flex align="center" justify="space-between" className="mockazzoHeader">
+        <Flex align="center" gap={8}>
+          <img src="/wheel-bgless.webp" width={20} height={20} />
+          <h1>Mockazzo</h1>
         </Flex>
-        <Button
-          onClick={toggleMockazzoOn}
-          icon={<PoweroffOutlined style={iconStyle} />}
-          type="text"
-          shape="circle"
-        ></Button>
+        <Flex gap={18}>
+          <Flex gap={4}>
+            <Tooltip title="Import Collections">
+              <Button
+                onClick={importCollections}
+                icon={<ImportOutlined style={{ fontSize: "20px" }} />}
+                type="text"
+                shape="circle"
+                className="actionBtn"
+              ></Button>
+            </Tooltip>
+            <Tooltip title="Export Collections">
+              <Button
+                onClick={() => setIsModalOpen(true)}
+                icon={<ExportOutlined style={{ fontSize: "20px" }} />}
+                type="text"
+                shape="circle"
+                className="actionBtn"
+              ></Button>
+            </Tooltip>
+          </Flex>
+          <Tooltip
+            title={isMockazzoOn ? "Turn Off Mockazzo" : "Turn On Mockazzo"}
+          >
+            <Button
+              onClick={toggleMockazzoOn}
+              icon={<PoweroffOutlined style={iconStyle} />}
+              type="text"
+              shape="circle"
+              className="turnOnBtn"
+            ></Button>
+          </Tooltip>
+        </Flex>
       </Flex>
       <Modal
         title="Export Collections"

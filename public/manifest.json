@@ -4,14 +4,15 @@
   "version": "1.0",
   "description": "Mockazzo, the serverless mock server",
   "icons": {
-    "16": "vite.svg"
+    "16": "wheel-jpg.jpg"
   },
   "permissions": ["scripting"],
   "host_permissions": ["http://*/*", "https://*/*"],
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],
-      "js": ["content.js"]
+      "js": ["content.js"],
+      "run_at": "document_start"
     }
   ],
   "web_accessible_resources": [

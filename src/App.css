@@ -1,11 +1,82 @@
+/* Define color variables in :root */
+:root {
+  --color-primary: #6a1e55;
+  --color-link: #6a1e55;
+  --color-success: #a64d79;
+  --color-error: #3b1c32;
+  --color-warning: #a64d79;
+  --color-info: #6a1e55;
+  --color-background: #1a1a1d;
+  --color-text: #f5f5f5;
+  --color-text-secondary: #a64d79;
+  --color-border: #3b1c32;
+  --color-btn-primary-bg: #6a1e55;
+  --color-btn-primary-border: #6a1e55;
+  --color-btn-default-bg: #1a1a1d;
+  --color-btn-default-border: #3b1c32;
+  --font-size-base: 14px;
+  --border-radius: 4px;
+  --color-heading: #f5f5f5;
+}
+
+body {
+  background: var(--color-background);
+}
+.layout {
+  background: var(--color-background);
+  height: 100vh;
+}
+.header {
+  background: var(--color-background);
+  color: var(--color-text);
+  height: 64px;
+  padding-inline: 48px;
+}
+.sider {
+  background: var(--color-background);
+  color: var(--color-text);
+  width: 35%;
+  overflow-y: "auto";
+  height: 100vh;
+  position: fixed;
+  inset-inline-start: 0;
+  top: 0;
+  bottom: 0;
+  scrollbar-width: "thin";
+  scrollbar-gutter: "stable";
+}
+.content {
+  background: #242428;
+  padding-left: 35%;
+}
+.sider__collections {
+  padding: 16px;
+  height: calc(100% - 64px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 .wrapper {
   display: flex;
   flex-direction: column;
+  gap: 8px;
 }
 .collection-wrapper {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
+}
+.col-btn-grp {
+  display: flex;
+  gap: 4px;
+}
+
+.route-wrapper {
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 .route-wrapper div {
   transition: all 0.3s ease;
@@ -13,11 +84,26 @@
 }
 
 .route-wrapper div:hover {
-  background: black;
+  color: var(--color-success);
 }
 
 .mockazzoHeader {
   height: 100%;
+  padding-left: 35%;
+}
+.mockazzoHeader h1 {
+  font-size: 20px;
+  background: transparent;
+}
+
+.actionBtn {
+  color: gray;
+}
+.actionBtn:hover {
+  color: #ffffff !important;
+}
+.turnOnBtn:hover {
+  color: rgb(255, 68, 68) !important;
 }
 
 .mockazzoForm {
@@ -27,4 +113,10 @@
   width: 100%;
   margin-inline: auto;
   margin-top: 16px;
+}
+.mockazzoForm label {
+  color: var(--color-text) !important;
+}
+.ant-input-group-addon {
+  background: #ffffff !important;
 }

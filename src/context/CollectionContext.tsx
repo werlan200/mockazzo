@@ -146,7 +146,7 @@ function CollectionProvider({ children }: any) {
         return [...collections, ...decompressedData];
       });
     } catch (error) {
-      console.log("import collection error");
+      alert("Collections could not be imported");
     }
   };
 

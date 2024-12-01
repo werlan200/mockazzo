@@ -1,4 +1,4 @@
-import { Input, Row, Col, Select, Button, Form, Switch, Flex } from "antd";
+import { Input, Row, Col, Select, Button, Form, Switch } from "antd";
 import { MockedRoute } from "../context/CollectionContext.types";
 import { useCollectionContext } from "../context/CollectionContext";
 import type { FormProps } from "antd";
@@ -44,8 +44,6 @@ const RouteForm = () => {
     <Form
       form={form}
       name={selectedId}
-      labelCol={{ span: 5 }}
-      wrapperCol={{ span: 16 }}
       initialValues={foundRoute}
       onFinish={onFinish}
       onFinishFailed={onFinishFailed}
@@ -61,38 +59,16 @@ const RouteForm = () => {
         <Input />
       </Form.Item>
 
-      <Row>
-        <Col span={12}>
-          <Form.Item<MockedRoute>
-            label="Label"
-            name="label"
-            rules={[{ required: true, message: "Please input your username!" }]}
-          >
-            <Input />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
-          <Form.Item<MockedRoute>
-            label="Delay"
-            name="delay"
-            rules={[{ required: true, message: "Please input your username!" }]}
-          >
-            <Input />
-          </Form.Item>
-        </Col>
-      </Row>
+      <Form.Item<MockedRoute>
+        label="Label"
+        name="label"
+        rules={[{ required: true, message: "Please input your username!" }]}
+      >
+        <Input />
+      </Form.Item>
 
-      <Row>
-        <Col span={12}>
-          <Form.Item<MockedRoute>
-            label="Status"
-            name="status"
-            rules={[{ required: true, message: "Please input your username!" }]}
-          >
-            <Input />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
+      <Row gutter={8}>
+        <Col span={8}>
           <Form.Item
             name="method"
             label="Method"
@@ -102,6 +78,24 @@ const RouteForm = () => {
             <Select placeholder="Select a option and change input text above">
               <Option value="GET">GET</Option>
             </Select>
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item<MockedRoute>
+            label="Status"
+            name="status"
+            rules={[{ required: true, message: "Please input your username!" }]}
+          >
+            <Input />
+          </Form.Item>
+        </Col>
+        <Col span={8}>
+          <Form.Item<MockedRoute>
+            label="Delay"
+            name="delay"
+            rules={[{ required: true, message: "Please input your username!" }]}
+          >
+            <Input addonAfter="ms" />
           </Form.Item>
         </Col>
       </Row>
