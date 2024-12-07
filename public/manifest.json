@@ -6,8 +6,14 @@
   "icons": {
     "16": "wheel-jpg.jpg"
   },
-  "permissions": ["scripting"],
+  "permissions": ["scripting", "tabs", "storage"],
   "host_permissions": ["http://*/*", "https://*/*"],
+  "action": {
+    "default_icon": "wheel-jpg.jpg"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
   "content_scripts": [
     {
       "matches": ["http://*/*", "https://*/*"],

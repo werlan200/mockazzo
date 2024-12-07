@@ -4,11 +4,13 @@ import {
   PoweroffOutlined,
   ImportOutlined,
   ExportOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import { useState } from "react";
 
 const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isClearModalOpen, setIsClearModalOpen] = useState(false);
   const [checkedCollections, setCheckedCollections] = useState([]);
 
   const {
@@ -17,6 +19,7 @@ const Header = () => {
     collections,
     exportCollections,
     importCollections,
+    clearAll,
   } = useCollectionContext();
   const iconStyle = {
     color: isMockazzoOn ? "red" : "gray",
@@ -33,6 +36,15 @@ const Header = () => {
     setCheckedCollections([]);
   };
 
+  const handleClearOk = () => {
+    setIsClearModalOpen(false);
+    clearAll();
+  };
+
+  const handleClearCancel = () => {
+    setIsClearModalOpen(false);
+  };
+
   const options = collections
     .filter((collection: any) => collection?.routes?.length > 0)
     .map((collection: any) => {
@@ -47,6 +59,17 @@ const Header = () => {
           <h1>Mockazzo</h1>
         </Flex>
         <Flex gap={18}>
+          <Flex>
+            <Tooltip title="Clear all data and cache">
+              <Button
+                onClick={() => setIsClearModalOpen(true)}
+                icon={<DeleteOutlined style={{ fontSize: "20px" }} />}
+                type="text"
+                shape="circle"
+                className="actionBtn deleteCache"
+              ></Button>
+            </Tooltip>
+          </Flex>
           <Flex gap={4}>
             <Tooltip title="Import Collections">
               <Button
@@ -88,6 +111,15 @@ const Header = () => {
         okText="Copy Export Data"
       >
         <Checkbox.Group options={options} onChange={setCheckedCollections} />
+      </Modal>
+      <Modal
+        title="Clear All"
+        open={isClearModalOpen}
+        onOk={handleClearOk}
+        onCancel={handleClearCancel}
+        okText="Delete All Data"
+      >
+        Are you sure you want to clear all data and cache?
       </Modal>
     </>
   );

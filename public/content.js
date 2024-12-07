@@ -1,12 +1,28 @@
-const script = document.createElement("script");
-script.src = chrome.runtime.getURL("interceptor.js");
-script.type = "text/javascript";
-script.async = false; // Synchronous execution
-script.defer = false; // Ensure it runs immediately
+(async () => {
+  try {
+    const isMockazzoOn = await chrome.storage.local.get("isMockazzoOn");
+    const mockazzoStorage = await chrome.storage.local.get("mockazzoStorage");
 
-const head = document.head || document.documentElement;
-if (head.firstChild) {
-  head.insertBefore(script, head.firstChild);
-} else {
-  head.appendChild(script); // Fallback if <head> is empty
-}
+    if (isMockazzoOn && mockazzoStorage) {
+      const script = document.createElement("script");
+      script.src = chrome.runtime.getURL("interceptor.js");
+      script.type = "text/javascript";
+      script.async = false;
+      script.defer = false;
+
+      document.head.appendChild(script);
+
+      script.onload = () => {
+        window.postMessage(
+          {
+            type: "MOCKAZZO_EXTENSION_DATA",
+            payload: { ...isMockazzoOn, ...mockazzoStorage },
+          },
+          "*"
+        );
+      };
+    }
+  } catch (error) {
+    console.error("Couldn't set Mockazzo Interceptor", error);
+  }
+})();

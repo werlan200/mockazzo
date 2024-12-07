@@ -1,11 +1,18 @@
-(function () {
-  const serializedValue = localStorage.getItem("mockazzoStorage");
-  const isMockazzoOn = localStorage.getItem("isMockazzoOn");
+window.addEventListener("message", (event) => {
+  if (event.source !== window) return; // Ignore messages not from the page itself
 
+  if (event.data.type === "MOCKAZZO_EXTENSION_DATA") {
+    const data = event.data.payload;
+    runMockazzoInterceptor(data.mockazzoStorage, data.isMockazzoOn);
+  }
+});
+
+function runMockazzoInterceptor(serializedValue, isMockazzoOn) {
   if (!serializedValue || !isMockazzoOn) {
-    console.log("No serialized value found in localStorage, returning");
+    console.log("No serialized value found, returning");
     return null;
   }
+
   const parsedStorage = JSON.parse(serializedValue);
   const isParsedMockazzoOn = JSON.parse(isMockazzoOn);
 
@@ -21,52 +28,90 @@
   window.fetch = async function (input, init) {
     const url = typeof input === "string" ? input : input.url;
     const foundMockedRoute = mockingRoutes.find((route) => route.url === url);
+
     if (foundMockedRoute) {
-      console.log(`Intercepted fetch request to: ${url}`);
-      return new Response(foundMockedRoute.response, {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          console.log(
+            `Intercepted fetch request to: ${url}`,
+            foundMockedRoute.response
+          );
+          resolve(
+            new Response(foundMockedRoute.response, {
+              status: 200,
+              headers: { "Content-Type": "application/json" },
+            })
+          );
+        }, foundMockedRoute.delay);
       });
     }
 
-    console.log("Original fetch request initiated.");
     return originalFetch(input, init);
   };
 
-  // Intercept XMLHttpRequest
-  const originalOpen = XMLHttpRequest.prototype.open;
-  XMLHttpRequest.prototype.open = function (
-    method,
-    url,
-    async,
-    user,
-    password
-  ) {
-    this._interceptedUrl = url; // Store the URL for later use
-    originalOpen.call(this, method, url, async, user, password);
+  const rawOpen = XMLHttpRequest.prototype.open;
+
+  XMLHttpRequest.prototype.open = function (_, url) {
+    this._interceptedUrl = url;
+    rawOpen.apply(this, arguments);
   };
 
   const originalSend = XMLHttpRequest.prototype.send;
+
   XMLHttpRequest.prototype.send = function (body) {
     const foundMockedRoute = mockingRoutes.find(
       (route) => route.url === this._interceptedUrl
     );
-    if (foundMockedRoute) {
-      console.log(`Intercepted XMLHttpRequest to: ${this._interceptedUrl}`);
 
-      this.onreadystatechange = () => {
-        if (this.readyState === 4) {
-          // Simulate a response
-          this.responseText = foundMockedRoute.response;
-          this.status = 200;
-          this.readyState = 4; // Done
-          this.onreadystatechange = null; // Clear listener
-        }
-      };
+    function mockResponse(mock) {
+      const headers = mock.responseHeaders;
+
+      Object.defineProperties(this, {
+        responseText: { value: JSON.parse(mock.response) },
+        response: { value: JSON.parse(mock.response) },
+        readyState: { value: 4 },
+        status: { value: mock.status },
+        statusText: { value: mock.statusText },
+        responseType: { value: "json" },
+        getResponseHeader: {
+          value: (headerName = "") => {
+            const header = headers.find(
+              (h) => h.name.toLowerCase() === headerName.toLowerCase()
+            );
+            return header ? header.value : null;
+          },
+        },
+        getAllResponseHeaders: {
+          value: () =>
+            headers
+              .filter((h) => h.active)
+              .map((h) => `${h.name}: ${h.value}`)
+              .join("\n"),
+        },
+      });
+
+      ["load", "readystatechange", "loadend"].forEach((event) =>
+        this.dispatchEvent(new Event(event))
+      );
+    }
+
+    if (foundMockedRoute) {
+      setTimeout(() => {
+        mockResponse.call(this, {
+          response: foundMockedRoute.response,
+          status: foundMockedRoute.status,
+          statusText: "OK",
+          responseHeaders: [],
+        });
+        console.log(
+          `Intercepted XML Request to: ${foundMockedRoute.url}`,
+          foundMockedRoute.response
+        );
+      }, foundMockedRoute.delay);
     } else {
       originalSend.call(this, body);
     }
   };
 
   console.log("Request interceptor script injected successfully.");
-})();
+}

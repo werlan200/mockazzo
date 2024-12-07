@@ -1,8 +1,12 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Collection, MockedRoute } from "./CollectionContext.types";
 import { baseMockRoute, createCollection } from "../constants/baseMockRoute";
 import { uuidv4 } from "../utils/uuid";
-import { setLocalStorage, getLocalStorage } from "../utils/storage";
+import {
+  setLocalStorage,
+  getLocalStorage,
+  clearLocalStorage,
+} from "../utils/storage";
 import {
   compressJSON,
   decompressJSON,
@@ -15,9 +19,21 @@ const CollectionContext = createContext<any>(undefined);
 function CollectionProvider({ children }: any) {
   const [collections, setCollections] = useState<Collection[]>([]);
   const [selectedId, setSelectedId] = useState("");
-  const [isMockazzoOn, setIsMockazzoOn] = useState(
-    getLocalStorage("isMockazzoOn") === true
-  );
+  const [isMockazzoOn, setIsMockazzoOn] = useState(false);
+
+  const setInitialState = async () => {
+    try {
+      const isMockazzoOn = await getLocalStorage("isMockazzoOn");
+      const collections = await getLocalStorage("mockazzoStorage");
+
+      if (isMockazzoOn) setIsMockazzoOn(isMockazzoOn.isMockazzoOn === "true");
+      if (collections) setCollections(JSON.parse(collections.mockazzoStorage));
+    } catch (error) {}
+  };
+
+  useEffect(() => {
+    setInitialState();
+  }, []);
 
   const addRouteToCollection = (collectionId: string) => {
     setCollections((collection) => {
@@ -33,6 +49,7 @@ function CollectionProvider({ children }: any) {
         return col;
       });
 
+      setLocalStorage("mockazzoStorage", newCollections);
       return newCollections;
     });
   };
@@ -42,7 +59,12 @@ function CollectionProvider({ children }: any) {
     newCollection.id = uuidv4();
     newCollection.label = `collection-${collections.length + 1}`;
 
-    setCollections((collections) => [...collections, newCollection]);
+    setCollections((collections) => {
+      const lastCollections = [...collections, newCollection];
+      setLocalStorage("mockazzoStorage", lastCollections);
+
+      return lastCollections;
+    });
   };
 
   const getRoute = (routeId: string) => {
@@ -104,25 +126,24 @@ function CollectionProvider({ children }: any) {
   };
 
   const deleteCollection = (collectionId: string) => {
-    setCollections((collections) => {
-      const filteredCollections = collections.filter(
-        (collection) => collection.id !== collectionId
-      );
-      return filteredCollections;
-    });
+    const updatedCollection = collections.filter(
+      (collection) => collection.id !== collectionId
+    );
+
+    setLocalStorage("mockazzoStorage", updatedCollection);
+    setCollections(updatedCollection);
   };
 
   const updateCollectionLabel = (collectionId: string, label: string) => {
-    setCollections((collections) => {
-      const newCollections = collections.map((collection) => {
-        if (collection.id === collectionId) {
-          collection.label = label;
-        }
-        return collection;
-      });
-
-      return newCollections;
+    const updatedCollections = collections.map((collection) => {
+      if (collection.id === collectionId) {
+        collection.label = label;
+      }
+      return collection;
     });
+
+    setLocalStorage("mockazzoStorage", updatedCollections);
+    setCollections(updatedCollections);
   };
 
   const exportCollections = (collectionIds: string[]) => {
@@ -150,6 +171,17 @@ function CollectionProvider({ children }: any) {
     }
   };
 
+  const clearAll = async () => {
+    try {
+      clearLocalStorage();
+      setSelectedId("");
+      setIsMockazzoOn(false);
+      setCollections([]);
+    } catch (error) {
+      alert("Could not clear data");
+    }
+  };
+
   return (
     <CollectionContext.Provider
       value={{
@@ -167,6 +199,7 @@ function CollectionProvider({ children }: any) {
         importCollections,
         deleteCollection,
         updateCollectionLabel,
+        clearAll,
       }}
     >
       {children}
