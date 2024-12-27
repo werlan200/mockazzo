@@ -30,18 +30,27 @@ function runMockazzoInterceptor(serializedValue, isMockazzoOn) {
     const foundMockedRoute = mockingRoutes.find((route) => route.url === url);
 
     if (foundMockedRoute) {
-      return new Promise((resolve) => {
+      return new Promise((resolve, reject) => {
         setTimeout(() => {
           console.log(
             `Intercepted fetch request to: ${url}`,
             foundMockedRoute.response
           );
-          resolve(
-            new Response(foundMockedRoute.response, {
-              status: 200,
-              headers: { "Content-Type": "application/json" },
-            })
-          );
+          if (foundMockedRoute.status < 400) {
+            resolve(
+              new Response(foundMockedRoute.response, {
+                status: foundMockedRoute.status,
+                headers: { "Content-Type": "application/json" },
+              })
+            );
+          } else {
+            reject(
+              new Response(foundMockedRoute.response, {
+                status: foundMockedRoute.status,
+                headers: { "Content-Type": "application/json" },
+              })
+            );
+          }
         }, foundMockedRoute.delay);
       });
     }
@@ -99,7 +108,7 @@ function runMockazzoInterceptor(serializedValue, isMockazzoOn) {
       setTimeout(() => {
         mockResponse.call(this, {
           response: foundMockedRoute.response,
-          status: foundMockedRoute.status,
+          status: Number(foundMockedRoute.status),
           statusText: "OK",
           responseHeaders: [],
         });
