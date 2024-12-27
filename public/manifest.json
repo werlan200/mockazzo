@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Mockazzo",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Mockazzo, the serverless mock server",
   "icons": {
     "16": "wheel-png.png",
@@ -9,7 +9,7 @@
     "48": "wheel-png.png",
     "128": "wheel-png.png"
   },
-  "permissions": ["scripting", "tabs", "storage"],
+  "permissions": ["storage"],
   "host_permissions": ["http://*/*", "https://*/*"],
   "action": {
     "default_icon": "wheel-png.png"
