@@ -26,3 +26,24 @@
     console.error("Couldn't set Mockazzo Interceptor", error);
   }
 })();
+
+chrome.storage.onChanged.addListener(async (changes, areaName) => {
+  if (areaName === "local") {
+    for (const [key, _] of Object.entries(changes)) {
+      if (key === "isMockazzoOn" || key === "mockazzoStorage") {
+        const isMockazzoOn = await chrome.storage.local.get("isMockazzoOn");
+        const mockazzoStorage = await chrome.storage.local.get(
+          "mockazzoStorage"
+        );
+
+        window.postMessage(
+          {
+            type: "MOCKAZZO_EXTENSION_DATA",
+            payload: { ...isMockazzoOn, ...mockazzoStorage },
+          },
+          "*"
+        );
+      }
+    }
+  }
+});

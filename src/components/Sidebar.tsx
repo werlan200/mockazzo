@@ -1,5 +1,10 @@
 import { Button, Input, Modal, Row, Tooltip } from "antd";
-import { PlusOutlined, MoreOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  MoreOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+} from "@ant-design/icons";
 import { useCollectionContext } from "../context/CollectionContext";
 import { Collection } from "../context/CollectionContext.types";
 import { useState } from "react";
@@ -76,8 +81,23 @@ const Sidebar = () => {
               </div>
               <div className="route-wrapper">
                 {collection.routes.map((route) => (
-                  <div onClick={() => setSelectedId(route.id)} key={route.id}>
-                    {route.label}
+                  <div
+                    onClick={() => setSelectedId(route.id)}
+                    key={route.id}
+                    style={{ display: "flex" }}
+                  >
+                    {route.isMocking ? (
+                      <CheckCircleOutlined
+                        style={{ fontSize: "16px", color: "#33cc33" }}
+                      />
+                    ) : (
+                      <CloseCircleOutlined
+                        style={{ fontSize: "16px", color: "#ff0000" }}
+                      />
+                    )}
+                    <span style={{ marginBottom: "0.7px", marginLeft: "8px" }}>
+                      {route.label}
+                    </span>
                   </div>
                 ))}
               </div>
