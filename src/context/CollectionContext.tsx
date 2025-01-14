@@ -164,6 +164,10 @@ function CollectionProvider({ children }: any) {
 
       const decompressedData = decompressJSON(clipboardContent);
       setCollections((collections) => {
+        setLocalStorage("mockazzoStorage", [
+          ...collections,
+          ...decompressedData,
+        ]);
         return [...collections, ...decompressedData];
       });
     } catch (error) {

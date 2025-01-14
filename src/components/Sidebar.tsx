@@ -1,4 +1,4 @@
-import { Button, Input, Modal, Row, Tooltip } from "antd";
+import { Button, Input, Modal, Row, Switch, Tooltip } from "antd";
 import {
   PlusOutlined,
   MoreOutlined,
@@ -20,6 +20,7 @@ const Sidebar = () => {
     addRouteToCollection,
     deleteCollection,
     updateCollectionLabel,
+    updateRoute,
   } = useCollectionContext();
 
   const onAddClick = (id: string) => {
@@ -82,22 +83,31 @@ const Sidebar = () => {
               <div className="route-wrapper">
                 {collection.routes.map((route) => (
                   <div
-                    onClick={() => setSelectedId(route.id)}
                     key={route.id}
-                    style={{ display: "flex" }}
+                    style={{ display: "flex", justifyContent: "space-between" }}
                   >
-                    {route.isMocking ? (
-                      <CheckCircleOutlined
-                        style={{ fontSize: "16px", color: "#33cc33" }}
-                      />
-                    ) : (
-                      <CloseCircleOutlined
-                        style={{ fontSize: "16px", color: "#ff0000" }}
-                      />
-                    )}
-                    <span style={{ marginBottom: "0.7px", marginLeft: "8px" }}>
-                      {route.label}
-                    </span>
+                    <div onClick={() => setSelectedId(route.id)}>
+                      {route.isMocking ? (
+                        <CheckCircleOutlined
+                          style={{ fontSize: "16px", color: "#33cc33" }}
+                        />
+                      ) : (
+                        <CloseCircleOutlined
+                          style={{ fontSize: "16px", color: "#ff0000" }}
+                        />
+                      )}
+                      <span
+                        style={{ marginBottom: "0.7px", marginLeft: "8px" }}
+                      >
+                        {route.label}
+                      </span>
+                    </div>
+                    <Switch
+                      value={route.isMocking}
+                      onChange={(isMocking) =>
+                        updateRoute(route.id, { isMocking })
+                      }
+                    />
                   </div>
                 ))}
               </div>

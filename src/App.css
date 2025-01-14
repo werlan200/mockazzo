@@ -87,6 +87,12 @@ body {
   color: var(--color-success);
 }
 
+.route-wrapper .ant-switch {
+  background: #8f8f8f !important;
+}
+.route-wrapper .ant-switch-checked {
+  background: #1677ff !important;
+}
 .mockazzoHeader {
   height: 100%;
   padding-left: 35%;
