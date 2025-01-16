@@ -1,43 +1,59 @@
-import { Button, Input, Modal, Row, Switch, Tooltip } from "antd";
-import {
-  PlusOutlined,
-  MoreOutlined,
-  CheckCircleOutlined,
-  CloseCircleOutlined,
-} from "@ant-design/icons";
-import { useCollectionContext } from "../context/CollectionContext";
-import { Collection } from "../context/CollectionContext.types";
-import { useState } from "react";
+import { PlusOutlined } from '@ant-design/icons';
+import { Button, Collapse, CollapseProps, Input, Modal, Row } from 'antd';
+import { useState } from 'react';
+import { useCollectionContext } from '../context/CollectionContext';
+import { Collection as CollectionType } from '../context/CollectionContext.types';
+import { Collection } from './Collection';
+import CollectionHeader from './CollectionHeader';
 
 const Sidebar = () => {
-  const [selectedCollection, setSelectedCollection] = useState("");
-  const [newCollectionLabel, setNewCollectionLabel] = useState("");
+  const [selectedCollection, setSelectedCollection] = useState('');
+  const [newCollectionLabel, setNewCollectionLabel] = useState('');
 
   const {
     setSelectedId,
     collections,
     addCollection,
-    addRouteToCollection,
     deleteCollection,
     updateCollectionLabel,
-    updateRoute,
   } = useCollectionContext();
 
-  const onAddClick = (id: string) => {
-    addRouteToCollection(id);
-  };
-
   const onNewCollectionClick = () => {
-    setSelectedId("");
+    setSelectedId('');
     addCollection();
   };
 
   const onModalOk = () => {
-    if (newCollectionLabel !== "")
+    if (newCollectionLabel !== '')
       updateCollectionLabel(selectedCollection, newCollectionLabel);
 
-    setNewCollectionLabel("");
-    setSelectedCollection("");
+    setNewCollectionLabel('');
+    setSelectedCollection('');
+  };
+
+  const createCollectionAccordionsProps = (collections: CollectionType[]) => {
+    const collectionAccordions: CollapseProps['items'] = collections.map(
+      (collection: CollectionType) => {
+        return {
+          key: collection.id,
+          label: collection.label,
+          children: (
+            <Collection
+              collection={collection}
+              onSelect={setSelectedCollection}
+            />
+          ),
+          extra: (
+            <CollectionHeader
+              collectionId={collection.id}
+              onSelectedCollectionChange={setSelectedCollection}
+            />
+          ),
+        };
+      }
+    );
+
+    return collectionAccordions;
   };
 
   return (
@@ -48,79 +64,25 @@ const Sidebar = () => {
           type="primary"
           onClick={onNewCollectionClick}
           icon={<PlusOutlined />}
-          style={{ borderRadius: "0px", height: "64px" }}
+          style={{ borderRadius: '0px', height: '64px' }}
         >
           New Collection
         </Button>
       </Row>
       <div className="sider__collections">
-        {collections.map((collection: Collection) => {
-          return (
-            <div className="wrapper" key={collection.id}>
-              <div className="collection-wrapper">
-                {collection.label}{" "}
-                <div className="col-btn-grp">
-                  <Tooltip title="Add Route" placement="bottom" color="#721e5a">
-                    <Button
-                      size="small"
-                      icon={<PlusOutlined />}
-                      onClick={() => onAddClick(collection.id)}
-                    ></Button>
-                  </Tooltip>
-                  <Tooltip
-                    title="Edit Collection"
-                    placement="bottom"
-                    color="#721e5a"
-                  >
-                    <Button
-                      size="small"
-                      icon={<MoreOutlined />}
-                      onClick={() => setSelectedCollection(collection.id)}
-                    ></Button>
-                  </Tooltip>
-                </div>
-              </div>
-              <div className="route-wrapper">
-                {collection.routes.map((route) => (
-                  <div
-                    key={route.id}
-                    style={{ display: "flex", justifyContent: "space-between" }}
-                  >
-                    <div onClick={() => setSelectedId(route.id)}>
-                      {route.isMocking ? (
-                        <CheckCircleOutlined
-                          style={{ fontSize: "16px", color: "#33cc33" }}
-                        />
-                      ) : (
-                        <CloseCircleOutlined
-                          style={{ fontSize: "16px", color: "#ff0000" }}
-                        />
-                      )}
-                      <span
-                        style={{ marginBottom: "0.7px", marginLeft: "8px" }}
-                      >
-                        {route.label}
-                      </span>
-                    </div>
-                    <Switch
-                      value={route.isMocking}
-                      onChange={(isMocking) =>
-                        updateRoute(route.id, { isMocking })
-                      }
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
+        <Collapse
+          ghost
+          className="sider_collapse"
+          items={createCollectionAccordionsProps(collections)}
+          bordered={false}
+        />
         <Modal
           title="Edit Collection"
-          open={selectedCollection !== ""}
+          open={selectedCollection !== ''}
           onOk={onModalOk}
           onCancel={() => {
-            setSelectedCollection("");
-            setNewCollectionLabel("");
+            setSelectedCollection('');
+            setNewCollectionLabel('');
           }}
           okText="Update"
           footer={[
@@ -129,8 +91,8 @@ const Sidebar = () => {
               danger
               onClick={() => {
                 deleteCollection(selectedCollection);
-                setNewCollectionLabel("");
-                setSelectedCollection("");
+                setNewCollectionLabel('');
+                setSelectedCollection('');
               }}
             >
               Delete Collection

@@ -1,17 +1,17 @@
-import { Input, Row, Col, Select, Button, Form, Switch } from "antd";
-import { MockedRoute } from "../context/CollectionContext.types";
-import { useCollectionContext } from "../context/CollectionContext";
-import type { FormProps } from "antd";
-import { useEffect } from "react";
+import type { FormProps } from 'antd';
+import { Button, Col, Form, Input, Row, Select, Switch } from 'antd';
+import { useEffect } from 'react';
+import { useCollectionContext } from '../context/CollectionContext';
+import { MockedRoute } from '../context/CollectionContext.types';
 
 const { TextArea } = Input;
 
 const { Option } = Select;
 
-const onFinishFailed: FormProps<MockedRoute>["onFinishFailed"] = (
+const onFinishFailed: FormProps<MockedRoute>['onFinishFailed'] = (
   errorInfo
 ) => {
-  console.log("Failed:", errorInfo);
+  console.log('Failed:', errorInfo);
 };
 
 const RouteForm = () => {
@@ -23,15 +23,15 @@ const RouteForm = () => {
   const foundRoute = getRoute(selectedId);
 
   const onBeautify = () => {
-    let parsedJson = JSON.parse(form.getFieldValue("response"));
+    const parsedJson = JSON.parse(form.getFieldValue('response'));
     const beautifiedJson = JSON.stringify(parsedJson, null, 4);
 
-    form.setFieldValue("response", beautifiedJson);
+    form.setFieldValue('response', beautifiedJson);
   };
 
   const onFinish = (values: MockedRoute) => {
     updateRoute(selectedId, values);
-    setSelectedId("");
+    setSelectedId('');
   };
 
   useEffect(() => {
@@ -53,7 +53,7 @@ const RouteForm = () => {
       <Form.Item<MockedRoute>
         label="Url"
         name="url"
-        rules={[{ required: true, message: "Please input your username!" }]}
+        rules={[{ required: true, message: 'Please input your username!' }]}
         className="mockazzoForm__url"
       >
         <Input />
@@ -62,7 +62,7 @@ const RouteForm = () => {
       <Form.Item<MockedRoute>
         label="Label"
         name="label"
-        rules={[{ required: true, message: "Please input your username!" }]}
+        rules={[{ required: true, message: 'Please input your username!' }]}
       >
         <Input />
       </Form.Item>
@@ -84,7 +84,7 @@ const RouteForm = () => {
           <Form.Item<MockedRoute>
             label="Status"
             name="status"
-            rules={[{ required: true, message: "Please input your username!" }]}
+            rules={[{ required: true, message: 'Please input your username!' }]}
           >
             <Input />
           </Form.Item>
@@ -93,7 +93,7 @@ const RouteForm = () => {
           <Form.Item<MockedRoute>
             label="Delay"
             name="delay"
-            rules={[{ required: true, message: "Please input your username!" }]}
+            rules={[{ required: true, message: 'Please input your username!' }]}
           >
             <Input addonAfter="ms" />
           </Form.Item>
@@ -110,7 +110,7 @@ const RouteForm = () => {
       </Form.Item>
 
       <Form.Item name="response" label="Response" rules={[{ required: true }]}>
-        <TextArea style={{ minHeight: "200px" }} />
+        <TextArea style={{ minHeight: '200px' }} />
       </Form.Item>
 
       <Row justify="center" gutter={8}>

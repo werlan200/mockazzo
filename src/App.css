@@ -7,6 +7,7 @@
   --color-warning: #a64d79;
   --color-info: #6a1e55;
   --color-background: #1a1a1d;
+  --color-background-secondary: #1f1f22e7;
   --color-text: #f5f5f5;
   --color-text-secondary: #a64d79;
   --color-border: #3b1c32;
@@ -36,27 +37,39 @@ body {
   background: var(--color-background);
   color: var(--color-text);
   width: 35%;
-  overflow-y: "auto";
+  overflow-y: 'auto';
   height: 100vh;
   position: fixed;
   inset-inline-start: 0;
   top: 0;
   bottom: 0;
-  scrollbar-width: "thin";
-  scrollbar-gutter: "stable";
+  scrollbar-width: 'thin';
+  scrollbar-gutter: 'stable';
 }
 .content {
   background: #242428;
   padding-left: 35%;
 }
 .sider__collections {
-  padding: 16px;
   height: calc(100% - 64px);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
+.sider_collapse {
+  border: none;
+}
+
+.sider_collapse .ant-collapse-header {
+  color: var(--color-text) !important;
+  font-weight: 600;
+}
+.sider_collapse .ant-collapse-content {
+  background: var(--color-background-secondary) !important;
+  color: var(--color-text) !important;
+}
+
 .wrapper {
   display: flex;
   flex-direction: column;
@@ -73,7 +86,7 @@ body {
 }
 
 .route-wrapper {
-  padding-left: 20px;
+  padding-left: 12px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -92,6 +105,16 @@ body {
 }
 .route-wrapper .ant-switch-checked {
   background: #1677ff !important;
+}
+.route {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--color-background-secondary);
+  color: var(--color-text);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 4px 0;
 }
 .mockazzoHeader {
   height: 100%;
