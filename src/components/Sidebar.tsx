@@ -70,12 +70,19 @@ const Sidebar = () => {
         </Button>
       </Row>
       <div className="sider__collections">
-        <Collapse
-          ghost
-          className="sider_collapse"
-          items={createCollectionAccordionsProps(collections)}
-          bordered={false}
-        />
+        {collections.length > 0 ? (
+          <Collapse
+            ghost
+            bordered={false}
+            defaultActiveKey={[collections[0].id]}
+            className="sider_collapse"
+            items={createCollectionAccordionsProps(collections)}
+          />
+        ) : (
+          <p className="sider__collections_empty">
+            You must first create or import a collection
+          </p>
+        )}
         <Modal
           title="Edit Collection"
           open={selectedCollection !== ''}
