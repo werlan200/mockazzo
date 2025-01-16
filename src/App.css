@@ -57,6 +57,11 @@ body {
   flex-direction: column;
   gap: 8px;
 }
+.sider__collections_empty {
+  color: gray;
+  margin-top: 24px;
+  text-align: center;
+}
 .sider_collapse {
   border: none;
 }

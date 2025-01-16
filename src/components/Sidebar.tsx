@@ -18,6 +18,14 @@ const Sidebar = () => {
     updateCollectionLabel,
   } = useCollectionContext();
 
+  // const collections = [
+  //   {
+  //     routes: [],
+  //     id: 'c4661d31-30b8-4dc6-92bd-2127d828b215',
+  //     label: 'collection-1',
+  //   },
+  // ];
+
   const onNewCollectionClick = () => {
     setSelectedId('');
     addCollection();
@@ -70,12 +78,19 @@ const Sidebar = () => {
         </Button>
       </Row>
       <div className="sider__collections">
-        <Collapse
-          ghost
-          className="sider_collapse"
-          items={createCollectionAccordionsProps(collections)}
-          bordered={false}
-        />
+        {collections.length > 0 ? (
+          <Collapse
+            ghost
+            bordered={false}
+            defaultActiveKey={[collections[0].id]}
+            className="sider_collapse"
+            items={createCollectionAccordionsProps(collections)}
+          />
+        ) : (
+          <p className="sider__collections_empty">
+            You must first create or import a collection
+          </p>
+        )}
         <Modal
           title="Edit Collection"
           open={selectedCollection !== ''}
