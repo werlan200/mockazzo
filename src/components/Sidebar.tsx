@@ -18,14 +18,6 @@ const Sidebar = () => {
     updateCollectionLabel,
   } = useCollectionContext();
 
-  // const collections = [
-  //   {
-  //     routes: [],
-  //     id: 'c4661d31-30b8-4dc6-92bd-2127d828b215',
-  //     label: 'collection-1',
-  //   },
-  // ];
-
   const onNewCollectionClick = () => {
     setSelectedId('');
     addCollection();
